@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>4-7-8 Breathing</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fff0f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    #circle {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: white;
+      transition: all 1s ease;
+    }
+    #status {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #444;
+    }
+    #info {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #444;
+    }
+    #buttons {
+      margin-top: 25px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      font-size: 16px;
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>4-7-8 Breathing</h1>
+  <div id="circle" style="background: #a5d8ff;">Start</div>
+  <div id="status">Press Start</div>
+  <div id="info">
+    <span id="reps">Reps: 0</span> &nbsp; | &nbsp; <span id="timer">Time: 00:00</span>
+  </div>
+  <div id="buttons">
+    <button onclick="startSession()">Start</button>
+    <button onclick="pauseSession()">Pause</button>
+    <button onclick="stopSession()">End</button>
+  </div>
+
+  <script>
+    const circle = document.getElementById('circle');
+    const status = document.getElementById('status');
+    const repsDisplay = document.getElementById('reps');
+    const timerDisplay = document.getElementById('timer');
+
+    let repCount = 0, secondsElapsed = 0;
+    let interval = null, timerInterval = null, countdownInterval = null;
+    let isPaused = false, stopped = true;
+
+    const phaseColors = {
+      Inhale: "#a5d8ff",  // Blue
+      Hold: "#ffd6a5",    // Orange
+      Exhale: "#b2f2bb"   // Green
+    };
+
+    const beep = () => new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3").play();
+
+    function updateTimer() {
+      const min = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+      const sec = String(secondsElapsed % 60).padStart(2, '0');
+      timerDisplay.innerText = `Time: ${min}:${sec}`;
+    }
+
+    function startSession() {
+      if (!stopped && !isPaused) return;
+      isPaused = false;
+      stopped = false;
+      if (!timerInterval) {
+        timerInterval = setInterval(() => {
+          secondsElapsed++;
+          updateTimer();
+        }, 1000);
+      }
+      startCycle();
+    }
+
+    function pauseSession() {
+      isPaused = true;
+      clearTimeout(interval);
+      clearInterval(countdownInterval);
+      clearInterval(timerInterval);
+      timerInterval = null;
+      status.innerText = "Paused";
+      circle.innerText = "Paused";
+    }
+
+    function stopSession() {
+      isPaused = false;
+      stopped = true;
+      clearTimeout(interval);
+      clearInterval(countdownInterval);
+      clearInterval(timerInterval);
+      interval = null;
+      countdownInterval = null;
+      timerInterval = null;
+      circle.innerText = "Start";
+      circle.style.background = "#a5d8ff";
+      circle.style.transform = "scale(1)";
+      status.innerText = "Session ended";
+    }
+
+    function startCycle() {
+      if (stopped || isPaused) return;
+      breathe("Inhale", 4, 1.2, () => {
+        breathe("Hold", 7, 1, () => {
+          breathe("Exhale", 8, 0.8, () => {
+            repCount++;
+            repsDisplay.innerText = `Reps: ${repCount}`;
+            interval = setTimeout(startCycle, 0);
+          });
+        });
+      });
+    }
+
+    function breathe(phase, seconds, scale, next) {
+      if (stopped || isPaused) return;
+      beep();
+      circle.innerText = phase;
+      circle.style.background = phaseColors[phase];
+      circle.style.transform = `scale(${scale})`;
+      let remaining = seconds;
+      status.innerText = `${phase}: ${remaining}s`;
+      countdownInterval = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(countdownInterval);
+          next();
+        } else {
+          status.innerText = `${phase}: ${remaining}s`;
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

@@ -1,166 +1,545 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>4-7-8 Breathing</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #fff0f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    h1 {
-      color: #333;
-      margin-bottom: 10px;
-    }
-    #circle {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      color: white;
-      transition: all 1s ease;
-    }
-    #status {
-      margin-top: 15px;
-      font-size: 18px;
-      color: #444;
-    }
-    #info {
-      margin-top: 10px;
-      font-size: 18px;
-      font-weight: bold;
-      color: #444;
-    }
-    #buttons {
-      margin-top: 25px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 0 5px;
-      font-size: 16px;
-      background: #ff4d6d;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-7-8 Breathing Exercise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 55, 0.2);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .breathing-circle {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .breathing-circle::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .circle-inner {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .phase-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            min-height: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .timer {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 120px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        #startBtn {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+        }
+
+        #pauseBtn {
+            background: linear-gradient(45deg, #FF9800, #FFC107);
+            color: white;
+        }
+
+        #stopBtn {
+            background: linear-gradient(45deg, #F44336, #E91E63);
+            color: white;
+        }
+
+        .benefits {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .benefits h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .benefit-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: #8BC34A;
+        }
+
+        .benefit-card p {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .instructions h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .instructions ol {
+            text-align: left;
+            padding-left: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .cycle-counter {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        /* Breathing animations */
+        @keyframes inhale {
+            0% { transform: scale(0.8); background: rgba(100, 200, 255, 0.3); }
+            100% { transform: scale(1.2); background: rgba(100, 200, 255, 0.6); }
+        }
+
+        @keyframes hold {
+            0% { transform: scale(1.2); background: rgba(100, 200, 255, 0.6); }
+            100% { transform: scale(1.2); background: rgba(255, 200, 100, 0.6); }
+        }
+
+        @keyframes exhale {
+            0% { transform: scale(1.2); background: rgba(255, 200, 100, 0.6); }
+            100% { transform: scale(0.8); background: rgba(255, 100, 100, 0.6); }
+        }
+
+        .inhale-animation {
+            animation: inhale 4s linear forwards;
+        }
+
+        .hold-animation {
+            animation: hold 7s linear forwards;
+        }
+
+        .exhale-animation {
+            animation: exhale 8s linear forwards;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .breathing-circle {
+                width: 250px;
+                height: 250px;
+            }
+
+            .circle-inner {
+                width: 170px;
+                height: 170px;
+                font-size: 1.2rem;
+            }
+
+            .timer {
+                font-size: 3.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+                min-width: 100px;
+            }
+            
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .breathing-circle {
+                width: 200px;
+                height: 200px;
+            }
+
+            .circle-inner {
+                width: 140px;
+                height: 140px;
+            }
+
+            .timer {
+                font-size: 2.5rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .phase-text {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>4-7-8 Breathing</h1>
-  <div id="circle" style="background: #a5d8ff;">Start</div>
-  <div id="status">Press Start</div>
-  <div id="info">
-    <span id="reps">Reps: 0</span> &nbsp; | &nbsp; <span id="timer">Time: 00:00</span>
-  </div>
-  <div id="buttons">
-    <button onclick="startSession()">Start</button>
-    <button onclick="pauseSession()">Pause</button>
-    <button onclick="stopSession()">End</button>
-  </div>
+    <div class="container">
+        <header>
+            <h1>4-7-8 Breathing Exercise</h1>
+            <p class="subtitle">A calming technique to reduce anxiety and improve sleep</p>
+        </header>
+        
+        <div class="breathing-circle">
+            <div class="circle-inner" id="circleInner">
+                Relax and Focus
+            </div>
+        </div>
+        
+        <div class="phase-text" id="phaseText">Ready to begin</div>
+        <div class="timer" id="timer">0</div>
+        
+        <div class="controls">
+            <button id="startBtn">Start</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="stopBtn">Stop</button>
+        </div>
+        
+        <div class="cycle-counter" id="cycleCounter">Completed cycles: 0</div>
+        
+        <div class="benefits">
+            <h2>Health Benefits</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h3>Reduces Anxiety</h3>
+                    <p>The 4-7-8 technique activates the parasympathetic nervous system, helping to calm the mind and reduce feelings of stress and anxiety.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Improves Sleep</h3>
+                    <p>Regular practice can help you fall asleep faster and enjoy deeper, more restorative sleep by promoting relaxation.</p>
+                </div>
+                <div class="benefit-card">
+                    <h3>Lowers Blood Pressure</h3>
+                    <p>Deep breathing exercises have been shown to reduce blood pressure and heart rate, supporting cardiovascular health.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>How it works:</h2>
+            <ol>
+                <li><strong>Inhale</strong> through your nose for 4 seconds</li>
+                <li><strong>Hold</strong> your breath for 7 seconds</li>
+                <li><strong>Exhale</strong> through your mouth for 8 seconds</li>
+                <li>Repeat this cycle 3-4 times for maximum benefit</li>
+            </ol>
+        </div>
+    </div>
 
-  <script>
-    const circle = document.getElementById('circle');
-    const status = document.getElementById('status');
-    const repsDisplay = document.getElementById('reps');
-    const timerDisplay = document.getElementById('timer');
+    <script>
+        // DOM elements
+        const circleInner = document.getElementById('circleInner');
+        const phaseText = document.getElementById('phaseText');
+        const timerElement = document.getElementById('timer');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const cycleCounter = document.getElementById('cycleCounter');
+        const breathingCircle = document.querySelector('.breathing-circle');
 
-    let repCount = 0, secondsElapsed = 0;
-    let interval = null, timerInterval = null, countdownInterval = null;
-    let isPaused = false, stopped = true;
+        // Breathing exercise variables
+        let interval;
+        let timer = 0;
+        let currentPhase = 'ready'; // ready, inhale, hold, exhale
+        let isRunning = false;
+        let isPaused = false;
+        let cycleCount = 0;
 
-    const phaseColors = {
-      Inhale: "#a5d8ff",  // Blue
-      Hold: "#ffd6a5",    // Orange
-      Exhale: "#b2f2bb"   // Green
-    };
+        // Phase durations in seconds
+        const PHASES = {
+            inhale: 4,
+            hold: 7,
+            exhale: 8
+        };
 
-    const beep = () => new Audio("https://www.soundjay.com/buttons/sounds/beep-07.mp3").play();
-
-    function updateTimer() {
-      const min = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-      const sec = String(secondsElapsed % 60).padStart(2, '0');
-      timerDisplay.innerText = `Time: ${min}:${sec}`;
-    }
-
-    function startSession() {
-      if (!stopped && !isPaused) return;
-      isPaused = false;
-      stopped = false;
-      if (!timerInterval) {
-        timerInterval = setInterval(() => {
-          secondsElapsed++;
-          updateTimer();
-        }, 1000);
-      }
-      startCycle();
-    }
-
-    function pauseSession() {
-      isPaused = true;
-      clearTimeout(interval);
-      clearInterval(countdownInterval);
-      clearInterval(timerInterval);
-      timerInterval = null;
-      status.innerText = "Paused";
-      circle.innerText = "Paused";
-    }
-
-    function stopSession() {
-      isPaused = false;
-      stopped = true;
-      clearTimeout(interval);
-      clearInterval(countdownInterval);
-      clearInterval(timerInterval);
-      interval = null;
-      countdownInterval = null;
-      timerInterval = null;
-      circle.innerText = "Start";
-      circle.style.background = "#a5d8ff";
-      circle.style.transform = "scale(1)";
-      status.innerText = "Session ended";
-    }
-
-    function startCycle() {
-      if (stopped || isPaused) return;
-      breathe("Inhale", 4, 1.2, () => {
-        breathe("Hold", 7, 1, () => {
-          breathe("Exhale", 8, 0.8, () => {
-            repCount++;
-            repsDisplay.innerText = `Reps: ${repCount}`;
-            interval = setTimeout(startCycle, 0);
-          });
-        });
-      });
-    }
-
-    function breathe(phase, seconds, scale, next) {
-      if (stopped || isPaused) return;
-      beep();
-      circle.innerText = phase;
-      circle.style.background = phaseColors[phase];
-      circle.style.transform = `scale(${scale})`;
-      let remaining = seconds;
-      status.innerText = `${phase}: ${remaining}s`;
-      countdownInterval = setInterval(() => {
-        remaining--;
-        if (remaining <= 0) {
-          clearInterval(countdownInterval);
-          next();
-        } else {
-          status.innerText = `${phase}: ${remaining}s`;
+        // Start the breathing exercise
+        function startBreathing() {
+            if (isRunning && !isPaused) return;
+            
+            isRunning = true;
+            isPaused = false;
+            
+            if (currentPhase === 'ready') {
+                cycleCount = 0;
+                cycleCounter.textContent = `Completed cycles: ${cycleCount}`;
+                startPhase('inhale');
+            } else {
+                resumeTimer();
+            }
         }
-      }, 1000);
-    }
-  </script>
+
+        // Pause the breathing exercise
+        function pauseBreathing() {
+            if (!isRunning || isPaused) return;
+            
+            isPaused = true;
+            clearInterval(interval);
+        }
+
+        // Stop the breathing exercise
+        function stopBreathing() {
+            isRunning = false;
+            isPaused = false;
+            currentPhase = 'ready';
+            timer = 0;
+            
+            clearInterval(interval);
+            
+            // Reset UI
+            phaseText.textContent = 'Ready to begin';
+            timerElement.textContent = '0';
+            circleInner.textContent = 'Relax and Focus';
+            breathingCircle.style.animation = 'none';
+            
+            cycleCount = 0;
+            cycleCounter.textContent = `Completed cycles: ${cycleCount}`;
+        }
+
+        // Start a specific phase
+        function startPhase(phase) {
+            currentPhase = phase;
+            timer = PHASES[phase];
+            updateUI();
+            
+            // Start timer countdown
+            interval = setInterval(() => {
+                if (!isPaused) {
+                    timer--;
+                    updateUI();
+                    
+                    if (timer <= 0) {
+                        clearInterval(interval);
+                        nextPhase();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Resume timer after pause
+        function resumeTimer() {
+            interval = setInterval(() => {
+                if (!isPaused) {
+                    timer--;
+                    updateUI();
+                    
+                    if (timer <= 0) {
+                        clearInterval(interval);
+                        nextPhase();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Move to the next phase
+        function nextPhase() {
+            switch (currentPhase) {
+                case 'inhale':
+                    startPhase('hold');
+                    break;
+                case 'hold':
+                    startPhase('exhale');
+                    break;
+                case 'exhale':
+                    cycleCount++;
+                    cycleCounter.textContent = `Completed cycles: ${cycleCount}`;
+                    startPhase('inhale');
+                    break;
+            }
+        }
+
+        // Update UI elements
+        function updateUI() {
+            timerElement.textContent = timer;
+            
+            switch (currentPhase) {
+                case 'inhale':
+                    phaseText.textContent = 'Inhale slowly through your nose';
+                    circleInner.textContent = 'Breathe In';
+                    breathingCircle.className = 'breathing-circle inhale-animation';
+                    break;
+                case 'hold':
+                    phaseText.textContent = 'Hold your breath';
+                    circleInner.textContent = 'Hold';
+                    breathingCircle.className = 'breathing-circle hold-animation';
+                    break;
+                case 'exhale':
+                    phaseText.textContent = 'Exhale slowly through your mouth';
+                    circleInner.textContent = 'Breathe Out';
+                    breathingCircle.className = 'breathing-circle exhale-animation';
+                    break;
+            }
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startBreathing);
+        pauseBtn.addEventListener('click', pauseBreathing);
+        stopBtn.addEventListener('click', stopBreathing);
+
+        // Initialize
+        updateUI();
+    </script>
 </body>
 </html>
